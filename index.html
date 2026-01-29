@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <meta charset="UTF-8">
+    <title>Untitled</title>
+    
+
+  </head>
+    
+  <body>
+  <!DOCTYPE html>
+
+<html lang="ar" dir="rtl">
+
+<head>
+
+<meta charset="UTF-8">
+
+<title>PIXEL MALL 2026 | الإمبراطورية</title>
+
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+<style>
+
+:root{ --gold:#ffcc00; --blue:#00f2ff; --dark:#050810; --glass:rgba(255,255,255,.05); --vip-glow: 0 0 20px rgba(255, 204, 0, 0.4); }
+
+body{margin:0;font-family:tahoma,arial;background:var(--dark);color:#fff;overflow-x:hidden}
+
+/* هيدر متطور مع شريط الرتب */
+
+header{padding:15px;background:#0a0f1e;border-bottom:2px solid var(--gold);display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:1000}
+
+.logo{font-weight:900;font-size:1.4em;color:var(--gold);text-shadow: 0 0 10px var(--gold);cursor:pointer}
+
+.user-info{display:flex;gap:15px;align-items:center}
+
+.stat-box{background:rgba(255,255,255,0.05);padding:5px 12px;border-radius:20px;font-size:13px;border:1px solid #222}
+
+/* نظام الشبكة والمربعات */
+
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(115px,1fr));gap:15px;padding:20px;max-width:1200px;margin:auto}
+
+.card{background:var(--glass);border-radius:15px;overflow:hidden;cursor:pointer;border:1px solid rgba(255,255,255,0.1);transition:0.4s;position:relative}
+
+.card.vip-item{border:2px solid var(--gold);box-shadow: var(--vip-glow);transform: scale(1.03);z-index:10}
+
+.card:hover{transform:translateY(-5px);border-color:var(--blue)}
+
+.card img, .card video{width:100%;height:115px;object-fit:cover}
+
+.views-badge{position:absolute;top:5px;left:5px;background:rgba(0,0,0,0.7);padding:2px 7px;border-radius:10px;font-size:10px;color:var(--blue)}
+
+.label{background:linear-gradient(transparent, rgba(0,0,0,0.9));font-size:11px;text-align:center;color:#fff;padding:8px 5px;position:absolute;bottom:0;width:100%}
+
+.vip-tag{position:absolute;top:5px;right:5px;color:var(--gold);font-size:12px;text-shadow:0 0 5px #000}
+
+/* شات المجتمع الإمبراطوري */
+
+.chat-panel{position:fixed;bottom:90px;left:15px;right:15px;height:380px;background:rgba(7,11,20,0.98);border:1px solid var(--gold);display:none;flex-direction:column;border-radius:20px;z-index:2000;box-shadow:0 15px 50px #000}
+
+.chat-messages{flex:1;overflow-y:auto;padding:15px;font-size:13px}
+
+.message{margin-bottom:12px;padding:8px;border-radius:10px;background:rgba(255,255,255,0.03);border-right:3px solid var(--blue)}
+
+.msg-admin{border-right-color:var(--gold);background:rgba(255,204,0,0.05)}
+
+.msg-admin b{color:var(--gold)}
+
+.chat-input-container{display:flex;padding:12px;background:#000;border-bottom-left-radius:20px;border-bottom-right-radius:20px}
+
+.chat-input-container input{flex:1;background:#111;border:1px solid #333;color:#fff;padding:12px;border-radius:10px;outline:none}
+
+/* الأزرار العائمة */
+
+.fab{position:fixed;bottom:25px;width:55px;height:55px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:2100;box-shadow:0 8px 20px rgba(0,0,0,0.6)}
+
+.btn-chat{right:20px;background:#fff;color:#000}
+
+.btn-ai{left:85px;background:var(--blue);color:#000}
+
+.btn-admin{left:20px;background:var(--gold);color:#000}
+
+/* لوحة التحكم الشاملة */
+
+.admin-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.95);z-index:3000;align-items:center;justify-content:center;padding:20px}
+
+.admin-card{background:#0a0f1e;padding:25px;border-radius:20px;width:100%;max-width:400px;border:1px solid var(--gold)}
+
+.admin-card input, .admin-card button{width:100%;padding:12px;margin:8px 0;border-radius:10px;border:1px solid #222;box-sizing:border-box}
+
+.admin-card input{background:#000;color:#fff}
+
+.admin-card button{background:var(--gold);font-weight:bold;cursor:pointer;font-size:16px}
+
+</style>
+
+</head>
+
+<body>
+
+<header>
+
+  <div class="logo">PIXEL MALL 👑</div>
+
+  <div class="user-info">
+
+    <div class="stat-box">💰 <span id="coinVal">0</span></div>
+
+    <div id="rankBadge" style="font-size:22px">👤</div>
+
+  </div>
+
+</header>
+
+<div class="grid" id="pixelGrid"></div>
+
+<div class="chat-panel" id="chatWindow">
+
+  <div style="padding:15px; border-bottom:1px solid #222; display:flex; justify-content:space-between; align-items:center">
+
+    <span style="color:var(--gold);font-weight:bold">💬 رادار المجتمع</span>
+
+    <span onclick="toggleChat()" style="cursor:pointer; font-size:20px">×</span>
+
+  </div>
+
+  <div class="chat-messages" id="chatMsgs"></div>
+
+  <div class="chat-input-container">
+
+    <input id="chatInp" placeholder="اكتب رسالتك لجميع السكان..." onkeydown="if(event.key==='Enter')sendMsg()">
+
+  </div>
+
+</div>
+
+<div class="fab btn-chat" onclick="toggleChat()"><i class="fas fa-comments"></i></div>
+
+<div class="fab btn-ai" onclick="askAI()"><i class="fas fa-robot"></i></div>
+
+<div class="fab btn-admin" onclick="showAdmin()"><i class="fas fa-crown"></i></div>
+
+<div class="admin-overlay" id="adminScreen">
+
+  <div class="admin-card">
+
+    <h3 style="color:var(--gold);text-align:center;margin-top:0">لوحة الإمبراطور 👑</h3>
+
+    <input id="admKey" type="password" placeholder="كلمة السر السرية">
+
+    <hr style="border:0.1px solid #222;margin:15px 0">
+
+    <input id="shID" type="number" placeholder="رقم المربع">
+
+    <input id="shName" type="text" placeholder="اسم المحل / الإعلان">
+
+    <input id="shLink" type="text" placeholder="رابط الصورة أو الفيديو">
+
+    <div style="display:flex;align-items:center;gap:10px;margin:10px 0;font-size:14px">
+
+        <label>تفعيل رتبة VIP؟</label>
+
+        <input type="checkbox" id="shVIP" style="width:20px">
+
+    </div>
+
+    <button onclick="saveChanges()">تحديث النظام الآن ✅</button>
+
+    <button onclick="hideAdmin()" style="background:#222;color:#888;margin-top:5px">إغلاق</button>
+
+  </div>
+
+</div>
+
+<script type="module">
+
+import {initializeApp} from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
+
+import {getDatabase,ref,onValue,push,set,update,query,limitToLast} from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
+
+import {getAuth,signInAnonymously} from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
+
+const app = initializeApp({
+
+  apiKey: "AIzaSyDn2TDLY2f0dO_x4-GW4GzLzMKEOFIZn2s",
+
+  databaseURL: "https://pixel-mail1-d6872-default-rtdb.firebaseio.com"
+
+});
+
+const db = getDatabase(app);
+
+const auth = getAuth(app);
+
+let myUID = null, myRole = "user", myCoins = 0;
+
+// 1. الدخول ونظام الرتب والكوينز (المرحلة 5)
+
+signInAnonymously(auth).then(u => {
+
+    myUID = u.user.uid;
+
+    onValue(ref(db, "users/"+myUID), s => {
+
+        if(!s.exists()) set(ref(db, "users/"+myUID), {role:"user", coins:100});
+
+        else {
+
+            const data = s.val();
+
+            myRole = data.role || "user";
+
+            myCoins = data.coins || 0;
+
+            document.getElementById("coinVal").innerText = myCoins;
+
+            document.getElementById("rankBadge").innerText = myRole === "admin" ? "👑" : "👤";
+
+        }
+
+    });
+
+});
+
+// 2. عرض المربعات (المرحلة 3 و VIP)
+
+onValue(ref(db, "shops"), snap => {
+
+    const grid = document.getElementById("pixelGrid");
+
+    grid.innerHTML = "";
+
+    const data = snap.val() || {};
+
+    
+
+    for(let i=1; i<=60; i++){ // عرض 60 مربع
+
+        const s = data[i];
+
+        const card = document.createElement("div");
+
+        card.className = "card" + (s && s.vip ? " vip-item" : "");
+
+        
+
+        if(s){
+
+            const isVid = s.link && s.link.includes(".mp4");
+
+            card.innerHTML = `
+
+                <span class="views-badge"><i class="fas fa-eye"></i> ${s.views || 0}</span>
+
+                ${s.vip ? '<span class="vip-tag"><i class="fas fa-star"></i></span>' : ''}
+
+                ${isVid ? `<video src="${s.link}" autoplay muted loop></video>` : `<img src="${s.link}">`}
+
+                <div class="label">${s.name}</div>
+
+            `;
+
+            card.onclick = () => {
+
+                // ميزة زيادة الكوينز والمشاهدات عند الضغط (المرحلة 5)
+
+                update(ref(db, `shops/${i}`), {views: (s.views || 0) + 1});
+
+                update(ref(db, `users/${myUID}`), {coins: myCoins + 1});
+
+                window.open(`https://wa.me/201060551863?text=مهتم بالمربع ${i}: ${s.name}`);
+
+            };
+
+        } else {
+
+            card.innerHTML = `<div style="height:115px;display:flex;align-items:center;justify-content:center;color:#222;font-size:11px">فارغ ${i}</div><div class="label">احجز مكانك</div>`;
+
+            card.onclick = () => window.open(`https://wa.me/201060551863?text=حجز المربع رقم ${i}`);
+
+        }
+
+        grid.appendChild(card);
+
+    }
+
+});
+
+// 3. شات المجتمع المطور (المرحلة 4)
+
+window.toggleChat = () => chatWindow.style.display = chatWindow.style.display === "flex" ? "none" : "flex";
+
+window.sendMsg = () => {
+
+    const val = chatInp.value.trim();
+
+    if(!val) return;
+
+    push(ref(db, "chat/global"), {uid:myUID, text:val, role:myRole, time:Date.now()});
+
+    chatInp.value = "";
+
+};
+
+onValue(query(ref(db, "chat/global"), limitToLast(25)), snap => {
+
+    const area = document.getElementById("chatMsgs");
+
+    area.innerHTML = "";
+
+    snap.forEach(c => {
+
+        const m = c.val();
+
+        const isAdm = m.role === "admin";
+
+        area.innerHTML += `<div class="message ${isAdm ? 'msg-admin' : ''}"><b>${isAdm ? '👑 الإدارة' : '👤 زائر'}</b>: ${m.text}</div>`;
+
+    });
+
+    area.scrollTop = area.scrollHeight;
+
+});
+
+// 4. لوحة الإدارة الشاملة
+
+window.showAdmin = () => adminScreen.style.display = "flex";
+
+window.hideAdmin = () => adminScreen.style.display = "none";
+
+window.saveChanges = () => {
+
+    if(admKey.value !== "2026") return alert("⛔ باسورد خطأ!");
+
+    if(!shID.value || !shName.value) return alert("⚠️ املأ البيانات!");
+
+    update(ref(db, "shops/"+shID.value), {
+
+        name: shName.value,
+
+        link: shLink.value,
+
+        vip: shVIP.checked,
+
+        views: 0
+
+    });
+
+    alert("🚀 تم التحديث بنجاح!"); hideAdmin();
+
+};
+
+// 5. الذكاء الاصطناعي (المرحلة 6)
+
+window.askAI = () => {
+
+    const suggestions = [
+
+        "المربعات الـ VIP تحصل على تفاعل 300% أكثر!",
+
+        "لقد جمعت اليوم " + myCoins + " كوينز، استمر في المشاهدة!",
+
+        "يوجد 5 مربعات شاغرة في الصف الأول، احجزها الآن.",
+
+        "نصيحة: الإعلانات التي تحتوي على فيديو تجذب زواراً أكثر."
+
+    ];
+
+    alert("🤖 مساعد بيكسل الذكي:\n\n" + suggestions[Math.floor(Math.random() * suggestions.length)]);
+
+};
+
+</script>
+
+</body>
+
+</html>
+    
+  </body>
+  
+</html>
