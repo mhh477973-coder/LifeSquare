@@ -1,184 +1,228 @@
 <!DOCTYPE html>
-<html lang="en" dir="ltr">
+<html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LifeSquare | Global Digital Heritage</title>
+    <title>LifeSquare | الذكرى الخالدة</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
         :root { --bg: #020617; --card: #0f172a; --accent: #38bdf8; --text: #f8fafc; --gold: #facc15; --success: #22c55e; --error: #ef4444; }
-        body { margin: 0; background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; overflow-x: hidden; }
+        body { margin: 0; background: var(--bg); color: var(--text); font-family: 'Cairo', sans-serif; overflow-x: hidden; }
         
-        /* الإعلانات */
-        .ad-box { background: #1e293b; height: 90px; margin: 20px auto; max-width: 1000px; display: flex; align-items: center; justify-content: center; border: 1px dashed var(--accent); color: var(--accent); border-radius: 12px; }
+        /* تحسين الإعلانات */
+        .ad-box { background: #1e293b; height: 90px; margin: 20px auto; max-width: 1000px; display: flex; align-items: center; justify-content: center; border: 1px dashed var(--accent); color: var(--accent); border-radius: 12px; font-weight: bold; }
 
-        /* الهيدر والدليل */
-        .guide-box { background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); padding: 25px; text-align: center; border-bottom: 2px solid var(--accent); }
-        header { padding: 40px 20px; text-align: center; }
-        h1 { font-size: 4rem; font-weight: 900; letter-spacing: -3px; margin: 0; cursor: pointer; background: linear-gradient(to right, #38bdf8, #818cf8, #facc15); -webkit-background-clip: text; -webkit-text-fill-color: transparent; user-select: none; }
-        .stats-bar { background: rgba(250, 204, 21, 0.1); color: var(--gold); padding: 10px 25px; border-radius: 50px; border: 1px solid var(--gold); display: inline-block; margin-top: 15px; font-weight: 900; }
+        header { padding: 40px 20px; text-align: center; background: radial-gradient(circle at top, #1e293b 0%, #020617 100%); }
+        h1 { font-size: 3.5rem; font-weight: 900; margin: 0; cursor: pointer; background: linear-gradient(45deg, var(--accent), var(--gold)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .stats-bar { background: rgba(56, 189, 248, 0.1); color: var(--accent); padding: 8px 20px; border-radius: 50px; border: 1px solid var(--accent); display: inline-block; margin-top: 15px; font-weight: bold; font-size: 0.9rem; }
 
-        /* الجريد والمربعات */
-        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); gap: 12px; padding: 20px; max-width: 1400px; margin: auto; }
-        .square { aspect-ratio: 1; background: var(--card); border-radius: 12px; border: 1px solid #1e293b; position: relative; overflow: hidden; cursor: pointer; transition: 0.3s; }
-        .square:hover { transform: scale(1.1); border-color: var(--accent); z-index: 10; }
-        .founding { border: 2px solid var(--gold) !important; }
-        .square img { width: 100%; height: 100%; object-fit: cover; opacity: 0.6; }
-        .square span { position: absolute; bottom: 0; width: 100%; background: rgba(0,0,0,0.7); font-size: 0.7rem; text-align: center; padding: 4px 0; }
+        /* الجريد والمربعات السحرية */
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 10px; padding: 20px; max-width: 1400px; margin: auto; }
+        .square { aspect-ratio: 1; background: var(--card); border-radius: 10px; border: 1px solid #1e293b; position: relative; overflow: hidden; cursor: pointer; transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        .square:hover { transform: translateY(-5px) scale(1.05); border-color: var(--gold); box-shadow: 0 10px 20px rgba(0,0,0,0.5); z-index: 5; }
+        .square img { width: 100%; height: 100%; object-fit: cover; filter: grayscale(30%); transition: 0.3s; }
+        .square:hover img { filter: grayscale(0%); }
+        .square .name-tag { position: absolute; bottom: 0; width: 100%; background: linear-gradient(transparent, rgba(0,0,0,0.9)); font-size: 0.65rem; text-align: center; padding: 10px 0; font-weight: bold; }
 
-        /* لوحة التحكم (Admin Panel) */
-        #adminPanel { display: none; position: fixed; inset: 0; background: rgba(2, 6, 23, 0.98); z-index: 10000; padding: 40px; overflow-y: auto; }
-        .admin-card { background: #1e293b; padding: 20px; border-radius: 15px; margin-bottom: 20px; border: 1px solid var(--accent); max-width: 600px; margin-left: auto; margin-right: auto; }
+        /* الأيقونات التفاعلية */
+        .founding-badge { position: absolute; top: 5px; right: 5px; color: var(--gold); font-size: 0.7rem; z-index: 2; }
 
-        /* النوافذ (Modals) */
-        .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9); backdrop-filter: blur(15px); z-index: 5000; align-items: center; justify-content: center; padding: 20px; }
-        .modal-box { background: var(--card); padding: 30px; border-radius: 24px; width: 100%; max-width: 450px; border: 1px solid var(--accent); }
-        input, textarea, select { width: 100%; padding: 12px; margin: 10px 0; background: #020617; border: 1px solid #334155; color: #fff; border-radius: 10px; box-sizing: border-box; }
-        .btn-main { background: var(--accent); color: #020617; padding: 15px; border: none; border-radius: 12px; width: 100%; font-weight: 900; cursor: pointer; }
-        .btn-del { background: var(--error); color: white; margin-top: 15px; display: none; }
+        /* المودال */
+        .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.95); backdrop-filter: blur(10px); z-index: 5000; align-items: center; justify-content: center; padding: 20px; }
+        .modal-box { background: var(--card); padding: 30px; border-radius: 20px; width: 100%; max-width: 450px; border: 1px solid #334155; position: relative; }
+        input, textarea, select { width: 100%; padding: 12px; margin: 10px 0; background: #020617; border: 1px solid #334155; color: #fff; border-radius: 8px; font-family: inherit; }
+        .btn-main { background: var(--accent); color: #020617; padding: 14px; border: none; border-radius: 10px; width: 100%; font-weight: 900; cursor: pointer; transition: 0.3s; }
+        .btn-main:hover { opacity: 0.9; transform: scale(0.98); }
+        
+        /* لوحة الإدارة */
+        #adminPanel { display: none; position: fixed; left: 20px; bottom: 20px; background: var(--gold); color: #000; padding: 15px; border-radius: 10px; z-index: 6000; font-weight: bold; cursor: pointer; box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
     </style>
 </head>
 <body>
 
-    <div id="topAd" class="ad-box">Google Ads Space (Top)</div>
-
-    <div class="guide-box">
-        <h2>A permanent place for your story in internet history.</h2>
-    </div>
+    <div id="topAd" class="ad-box">مساحة إعلانية علوية (Google Ads)</div>
 
     <header>
-        <h1 id="title" ondblclick="askAdmin()">LifeSquare</h1>
-        <div class="stats-bar">✨ <span id="memCount">0</span> MEMORIES SAVED WORLDWIDE</div>
+        <h1 id="title" onclick="tryAdmin()">LifeSquare</h1>
+        <p style="margin: 5px 0; opacity: 0.7;">مكانك الأبدي في تاريخ الإنترنت الرقمي</p>
+        <div class="stats-bar">
+            <i class="fas fa-globe-americas"></i> <span id="memCount">0</span> ذكريات حُفظت للأبد
+        </div>
     </header>
 
     <div class="grid" id="mainGrid"></div>
 
-    <div id="bottomAd" class="ad-box">Google Ads Space (Bottom)</div>
+    <div id="bottomAd" class="ad-box">مساحة إعلانية سفلية (Google Ads)</div>
 
-    <div id="adminPanel">
-        <h1 style="color: var(--gold);">Admin Dashboard</h1>
-        <div class="admin-card">
-            <h3>Wall Settings</h3>
-            <p>Total Squares: <input type="number" id="gridIn" value="200"> <button onclick="updateGrid()">Update</button></p>
-        </div>
-        <div class="admin-card">
-            <h3>Security</h3>
-            <p>Change Password: <input type="password" id="newPass" placeholder="New Password"> <button onclick="savePass()">Save Pass</button></p>
-        </div>
-        <div class="admin-card">
-            <h3>Ad Control</h3>
-            <button onclick="document.getElementById('topAd').style.display='none'">Hide Top Ad</button>
-            <button onclick="document.getElementById('topAd').style.display='flex'">Show Top Ad</button>
-        </div>
-        <button onclick="document.getElementById('adminPanel').style.display='none'" class="btn-main" style="background:var(--error); color:white;">Close Dashboard</button>
+    <div id="adminPanel" onclick="openAdminSettings()">
+        <i class="fas fa-user-shield"></i> لوحة التحكم نشطة
     </div>
 
-    <div class="modal" id="addModal"><div class="modal-box">
-        <h2>Add Memory</h2>
-        <input id="name" placeholder="Name">
-        <input id="country" placeholder="Country">
-        <textarea id="story" placeholder="Story"></textarea>
-        <input type="file" id="imgFile" accept="image/*">
-        <button class="btn-main" id="saveBtn">IMMORTALIZE</button>
-        <button onclick="closeModal('addModal')" style="background:none; color:white; border:none; margin-top:10px; cursor:pointer;">Cancel</button>
-    </div></div>
+    <div class="modal" id="addModal">
+        <div class="modal-box">
+            <h2 style="margin-top:0; color:var(--accent)">خلّد ذكرى جديدة</h2>
+            <input id="name" placeholder="اسمك أو لقبك">
+            <select id="country">
+                <option value="">اختر الدولة</option>
+                <option value="Egypt">مصر 🇪🇬</option>
+                <option value="Saudi Arabia">السعودية 🇸🇦</option>
+                <option value="USA">أمريكا 🇺🇸</option>
+                <option value="Global">دولي 🌐</option>
+            </select>
+            <textarea id="story" placeholder="اكتب قصتك هنا للزمن..." rows="4"></textarea>
+            <p style="font-size: 0.8rem; color: #94a3b8;">اختر صورة (يفضل أن تكون مربعة):</p>
+            <input type="file" id="imgFile" accept="image/*">
+            <button class="btn-main" id="saveBtn">حفظ في التاريخ الرقمي</button>
+            <button onclick="closeModal('addModal')" style="background:none; color:#94a3b8; border:none; margin-top:15px; width:100%; cursor:pointer;">إلغاء</button>
+        </div>
+    </div>
 
-    <div class="modal" id="viewModal"><div class="modal-box" id="viewBox"></div></div>
+    <div class="modal" id="viewModal">
+        <div class="modal-box" id="viewBox" style="text-align: center;"></div>
+    </div>
 
     <script type="module">
         import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm'
-        const supabase = createClient("https://fnbdhcncujueyznrlmpi.supabase.co", "sb_publishable_wzpxcVJxxAIElNknL8hUHA_GCDzvcVR")
+        
+        // إعدادات المشروع الخاصة بك
+        const SB_URL = "https://fnbdhcncujueyznrlmpi.supabase.co";
+        const SB_KEY = "sb_publishable_wzpxcVJxxAIElNknL8hUHA_GCDzvcVR";
+        const supabase = createClient(SB_URL, SB_KEY);
 
-        let gridSize = 200, isAdmin = false;
-        let masterPass = localStorage.getItem('adminPass') || '123';
+        let gridSize = 200;
+        let isAdmin = localStorage.getItem('isAdmin') === 'true';
 
-        window.askAdmin = () => {
-            let p = prompt("Enter Admin Password:");
-            if(p === masterPass) { 
-                isAdmin = true; 
-                document.getElementById('adminPanel').style.display='block'; 
-                updateAdminStats();
-            } else { alert("Wrong Password!"); }
+        // الدخول للإدارة بكلمة سر
+        window.tryAdmin = () => {
+            if(isAdmin) { openAdminSettings(); return; }
+            let p = prompt("أدخل كلمة سر الإدارة:");
+            if(p === "123") { // يمكنك تغيير كلمة السر هنا
+                isAdmin = true;
+                localStorage.setItem('isAdmin', 'true');
+                document.getElementById('adminPanel').style.display = 'block';
+                alert("تم تفعيل وضع الإدارة ✅");
+            }
         };
 
-        window.savePass = () => {
-            let np = document.getElementById('newPass').value;
-            if(np) { localStorage.setItem('adminPass', np); masterPass = np; alert("Password Saved!"); }
+        window.openAdminSettings = () => {
+            let action = prompt("ماذا تريد أن تفعل؟\n1- تغيير حجم الحائط\n2- خروج من الإدارة");
+            if(action === "1") {
+                let size = prompt("أدخل عدد المربعات الجديد:", gridSize);
+                if(size) { gridSize = parseInt(size); loadWall(); }
+            } else if(action === "2") {
+                isAdmin = false;
+                localStorage.removeItem('isAdmin');
+                document.getElementById('adminPanel').style.display = 'none';
+            }
         };
 
-        window.updateGrid = () => { gridSize = document.getElementById('gridIn').value; loadWall(); };
         window.closeModal = id => document.getElementById(id).style.display = "none";
 
-        async function updateAdminStats() {
-            const { count } = await supabase.from('memories').select('*', { count: 'exact', head: true });
-            document.getElementById('memCount').innerText = count;
-        }
-
+        // تحميل الحائط
         async function loadWall() {
-            const grid = document.getElementById("mainGrid"); grid.innerHTML = "";
-            const { data } = await supabase.from("memories").select("*");
-            const map = {}; data?.forEach(m => map[m.square_id] = m);
+            const grid = document.getElementById("mainGrid");
+            grid.innerHTML = '<p style="grid-column: 1/-1; text-align:center;">جاري تحميل الذكريات...</p>';
+            
+            const { data, error } = await supabase.from("memories").select("*").order('created_at', { ascending: false });
+            
+            const map = {};
+            data?.forEach(m => map[m.square_id] = m);
             document.getElementById('memCount').innerText = data ? data.length : 0;
+            if(isAdmin) document.getElementById('adminPanel').style.display = 'block';
 
-            for (let i = 0; i < gridSize; i++) {
+            grid.innerHTML = "";
+            for (let i = 1; i <= gridSize; i++) {
                 let sq = document.createElement("div");
-                sq.className = i < 10 ? "square founding" : "square";
+                sq.className = "square";
                 let m = map[i];
+
                 if(m) {
-                    if(m.image_url) sq.innerHTML = `<img src="${m.image_url}">`;
-                    sq.innerHTML += `<span>${m.name}</span>`;
+                    sq.innerHTML = `
+                        ${m.image_url ? `<img src="${m.image_url}" loading="lazy">` : '<i class="fas fa-image" style="display:block; margin:35% auto; opacity:0.2"></i>'}
+                        <div class="name-tag">${m.name}</div>
+                        ${i <= 10 ? '<i class="fas fa-crown founding-badge"></i>' : ''}
+                    `;
                     sq.onclick = () => showMemory(m);
                 } else {
-                    sq.innerHTML = '<i class="fas fa-plus" style="opacity:.1; display:block; text-align:center; margin-top:40%;"></i>';
-                    sq.onclick = () => { window.sel = i; document.getElementById('addModal').style.display='flex'; };
+                    sq.innerHTML = '<i class="fas fa-plus" style="opacity:0.05; display:block; text-align:center; margin-top:40%;"></i>';
+                    sq.onclick = () => { window.selSquare = i; document.getElementById('addModal').style.display='flex'; };
                 }
                 grid.appendChild(sq);
             }
         }
 
-        async function showMemory(m) {
+        // عرض تفاصيل المربع
+        window.showMemory = (m) => {
             const v = document.getElementById("viewBox");
             v.innerHTML = `
-                <div style="text-align:center">
-                    ${m.image_url ? `<img src="${m.image_url}" style="width:100%; border-radius:15px;">` : ''}
-                    <h2>${m.name}</h2>
-                    <p style="color:var(--accent)">📍 ${m.country}</p>
-                    <p>"${m.story}"</p>
-                    <button class="btn-main" id="lBtn">❤️ Love (${m.likes || 0})</button>
-                    <button class="btn-main btn-del" id="adminDel" style="${isAdmin ? 'display:block' : 'none'}">DELETE AS ADMIN</button>
-                    <button onclick="closeModal('viewModal')" style="background:none; color:white; border:none; margin-top:15px; cursor:pointer;">Close</button>
-                </div>`;
-            
-            document.getElementById('lBtn').onclick = async () => {
-                await supabase.rpc("increment_likes", { row_id: m.id });
-                closeModal('viewModal'); loadWall();
-            };
-            if(isAdmin) {
-                document.getElementById('adminDel').onclick = async () => {
-                    if(confirm("Delete this?")) { await supabase.from('memories').delete().eq('id', m.id); closeModal('viewModal'); loadWall(); }
-                };
-            }
+                ${m.image_url ? `<img src="${m.image_url}" style="width:100%; border-radius:15px; margin-bottom:15px; border:2px solid var(--accent)">` : ''}
+                <h2 style="color:var(--gold); margin:0;">${m.name}</h2>
+                <p style="color:var(--accent); font-weight:bold;">📍 ${m.country}</p>
+                <div style="background:#020617; padding:15px; border-radius:10px; margin:15px 0; line-height:1.6;">
+                    "${m.story}"
+                </div>
+                <div style="display:flex; gap:10px;">
+                    <button class="btn-main" onclick="likeMemory('${m.id}')" style="flex:2">❤️ أعجبني (${m.likes || 0})</button>
+                    ${isAdmin ? `<button class="btn-main" onclick="deleteMemory('${m.id}')" style="background:var(--error); flex:1">حذف</button>` : ''}
+                </div>
+                <button onclick="closeModal('viewModal')" style="background:none; color:#94a3b8; border:none; margin-top:20px; cursor:pointer;">إغلاق النافذة</button>
+            `;
             document.getElementById('viewModal').style.display='flex';
-        }
+        };
 
-        document.getElementById("saveBtn").onclick = async () => {
-            const btn = document.getElementById("saveBtn"); btn.innerText = "Processing..."; btn.disabled = true;
-            const file = document.getElementById("imgFile").files[0]; let url = null;
-            if (file) {
-                const { data } = await supabase.storage.from("memories").upload(`${Date.now()}_${file.name}`, file);
-                if (data) url = `https://fnbdhcncujueyznrlmpi.supabase.co/storage/v1/object/public/memories/${data.path}`;
+        // تفاعلات
+        window.likeMemory = async (id) => {
+            await supabase.rpc("increment_likes", { row_id: id });
+            closeModal('viewModal');
+            loadWall();
+        };
+
+        window.deleteMemory = async (id) => {
+            if(confirm("هل أنت متأكد من حذف هذه الذكرى نهائياً؟")) {
+                await supabase.from('memories').delete().eq('id', id);
+                closeModal('viewModal');
+                loadWall();
             }
+        };
+
+        // حفظ ذكرى جديدة
+        document.getElementById("saveBtn").onclick = async () => {
+            const btn = document.getElementById("saveBtn");
+            const file = document.getElementById("imgFile").files[0];
+            const name = document.getElementById("name").value;
+            
+            if(!name) { alert("من فضلك أدخل اسمك"); return; }
+            
+            btn.innerText = "جاري الحفظ في التاريخ...";
+            btn.disabled = true;
+
+            let imageUrl = null;
+            if (file) {
+                const fileName = `${Date.now()}_${file.name}`;
+                const { data, error: uploadError } = await supabase.storage.from("memories").upload(fileName, file);
+                if (data) imageUrl = `${SB_URL}/storage/v1/object/public/memories/${data.path}`;
+            }
+
             const { error } = await supabase.from("memories").insert([{
-                square_id: window.sel, name: document.getElementById("name").value,
-                story: document.getElementById("story").value, country: document.getElementById("country").value,
-                image_url: url
+                square_id: window.selSquare,
+                name: name,
+                story: document.getElementById("story").value,
+                country: document.getElementById("country").value,
+                image_url: imageUrl
             }]);
-            if(error) alert("Error! Square might be taken.");
-            location.reload();
+
+            if(error) {
+                alert("عذراً، حدث خطأ أو ربما حجز أحدهم المربع الآن!");
+                console.error(error);
+            } else {
+                alert("مبروك! لقد أصبحت جزءاً من التاريخ الرقمي ✨");
+                location.reload();
+            }
         };
 
         loadWall();
     </script>
 </body>
 </html>
+
