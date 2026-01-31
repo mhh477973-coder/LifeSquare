@@ -3,90 +3,121 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LifeSquare | الذكرى الخالدة</title>
+    <title>LifeSquare | The Eternal Vault</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&family=Orbitron:wght@400;900&display=swap" rel="stylesheet">
     <style>
-        :root { --bg: #020617; --card: #0f172a; --accent: #38bdf8; --text: #f8fafc; --gold: #facc15; --success: #22c55e; --error: #ef4444; }
+        :root { --bg: #020617; --card: #0f172a; --accent: #38bdf8; --text: #f8fafc; --gold: #facc15; --success: #22c55e; --error: #ef4444; --glass: rgba(255, 255, 255, 0.05); }
+        
         body { margin: 0; background: var(--bg); color: var(--text); font-family: 'Cairo', sans-serif; overflow-x: hidden; scroll-behavior: smooth; }
         
-        /* تحسين الإعلانات */
-        .ad-box { background: #1e293b; height: 90px; margin: 20px auto; max-width: 1000px; display: flex; align-items: center; justify-content: center; border: 1px dashed var(--accent); color: var(--accent); border-radius: 12px; font-weight: bold; transition: 0.3s; }
+        /* خلفية النجوم المتحركة */
+        #starfield { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; background: radial-gradient(circle at center, #1e293b 0%, #020617 100%); }
 
-        header { padding: 40px 20px; text-align: center; background: radial-gradient(circle at top, #1e293b 0%, #020617 100%); }
-        h1 { font-size: clamp(2.5rem, 8vw, 4rem); font-weight: 900; margin: 0; cursor: pointer; background: linear-gradient(45deg, var(--accent), var(--gold)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        .stats-bar { background: rgba(56, 189, 248, 0.1); color: var(--accent); padding: 8px 25px; border-radius: 50px; border: 1px solid var(--accent); display: inline-block; margin-top: 15px; font-weight: bold; }
-
-        /* الجريد المطور */
-        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); gap: 12px; padding: 20px; max-width: 1400px; margin: auto; }
-        .square { aspect-ratio: 1; background: var(--card); border-radius: 12px; border: 1px solid #1e293b; position: relative; overflow: hidden; cursor: pointer; transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); display: flex; align-items: center; justify-content: center; text-align: center; }
-        .square:hover { transform: translateY(-5px) scale(1.05); border-color: var(--gold); box-shadow: 0 10px 25px rgba(0,0,0,0.5); z-index: 5; }
+        header { padding: 60px 20px; text-align: center; position: relative; }
+        h1 { font-family: 'Orbitron', sans-serif; font-size: clamp(3rem, 10vw, 5rem); font-weight: 900; margin: 0; cursor: pointer; background: linear-gradient(to bottom, #fff, var(--accent)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; filter: drop-shadow(0 0 15px rgba(56, 189, 248, 0.5)); }
         
-        .square img { width: 100%; height: 100%; object-fit: cover; filter: brightness(0.8); transition: 0.3s; }
-        .square:hover img { filter: brightness(1); }
-        
-        .square .empty-text { font-size: 0.65rem; color: #475569; font-weight: bold; padding: 5px; line-height: 1.2; }
-        .square .name-tag { position: absolute; bottom: 0; width: 100%; background: linear-gradient(transparent, rgba(0,0,0,0.9)); font-size: 0.7rem; padding: 8px 0; font-weight: bold; color: #fff; }
+        .stats-bar { background: var(--glass); backdrop-filter: blur(10px); padding: 10px 30px; border-radius: 50px; border: 1px solid rgba(56, 189, 248, 0.3); display: inline-block; margin-top: 20px; font-weight: bold; letter-spacing: 1px; }
 
-        /* الأيقونات المميزة */
-        .crown { position: absolute; top: 5px; left: 5px; color: var(--gold); font-size: 0.8rem; z-index: 2; text-shadow: 0 0 5px #000; }
-
-        /* المودال */
-        .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9); backdrop-filter: blur(15px); z-index: 5000; align-items: center; justify-content: center; padding: 20px; }
-        .modal-box { background: var(--card); padding: 30px; border-radius: 24px; width: 100%; max-width: 450px; border: 1px solid var(--accent); position: relative; max-height: 90vh; overflow-y: auto; }
+        /* الجريد العالمي */
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 15px; padding: 30px; max-width: 1400px; margin: auto; }
         
-        input, textarea, select { width: 100%; padding: 12px; margin: 10px 0; background: #020617; border: 1px solid #334155; color: #fff; border-radius: 10px; font-family: inherit; }
-        .btn-main { background: var(--accent); color: #020617; padding: 15px; border: none; border-radius: 12px; width: 100%; font-weight: 900; cursor: pointer; transition: 0.3s; margin-top: 10px; display: flex; align-items: center; justify-content: center; gap: 10px; }
-        .btn-main:hover { transform: scale(0.98); opacity: 0.9; }
-        .btn-main:disabled { background: #475569; cursor: not-allowed; }
-
-        /* Admin UI */
-        #adminTools { display: none; background: var(--gold); color: #000; padding: 10px 20px; border-radius: 50px; position: fixed; bottom: 20px; left: 20px; font-weight: 900; cursor: pointer; z-index: 6000; }
+        .square { aspect-ratio: 1; background: var(--card); border-radius: 16px; border: 1px solid rgba(255,255,255,0.1); position: relative; overflow: hidden; cursor: pointer; transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1); display: flex; align-items: center; justify-content: center; }
         
-        /* شهادة التوثيق */
-        #certificateCard { background: linear-gradient(135deg, #1e293b 0%, #020617 100%); border: 5px solid var(--gold); padding: 30px; border-radius: 20px; color: white; margin-bottom: 20px; display: none; }
+        /* أنيميشن القفل للمربعات الفارغة */
+        .square.empty::before { content: '\f023'; font-family: 'Font Awesome 6 Free'; font-weight: 900; font-size: 1.5rem; color: rgba(255,255,255,0.1); transition: 0.3s; }
+        .square.empty:hover::before { color: var(--accent); transform: scale(1.2) rotate(-10deg); }
+        .square.empty:hover { background: rgba(56, 189, 248, 0.05); border-color: var(--accent); box-shadow: 0 0 20px rgba(56, 189, 248, 0.2); }
+
+        .square img { width: 100%; height: 100%; object-fit: cover; transition: 0.5s; }
+        .square:hover img { transform: scale(1.1); filter: brightness(1.1); }
+        
+        /* تمييز المربعات المحجوزة */
+        .name-tag { position: absolute; bottom: 0; width: 100%; background: linear-gradient(transparent, rgba(0,0,0,0.8)); font-size: 0.75rem; padding: 10px 0; text-align: center; font-weight: bold; }
+        
+        /* رمز الحارس */
+        .guardian-icon { position: absolute; top: 8px; right: 8px; font-size: 0.9rem; z-index: 2; background: rgba(0,0,0,0.5); width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 1px solid var(--gold); }
+
+        /* المودالات المحدثة */
+        .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); backdrop-filter: blur(20px); z-index: 9999; align-items: center; justify-content: center; padding: 20px; }
+        .modal-box { background: #0f172a; padding: 40px; border-radius: 30px; width: 100%; max-width: 500px; border: 1px solid rgba(56, 189, 248, 0.5); box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5); }
+
+        /* لوحة التحكم الاحترافية */
+        #adminPanel { position: fixed; bottom: 30px; left: 30px; z-index: 10000; display: none; }
+        .admin-btn { background: var(--gold); color: #000; padding: 15px 25px; border-radius: 50px; font-weight: 900; cursor: pointer; box-shadow: 0 10px 20px rgba(250, 204, 21, 0.3); border: none; display: flex; align-items: center; gap: 10px; }
+
+        /* اختيار الحارس */
+        .guardian-selector { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin: 15px 0; }
+        .g-opt { padding: 10px; border: 1px solid #334155; border-radius: 12px; cursor: pointer; text-align: center; transition: 0.3s; font-size: 1.2rem; }
+        .g-opt.active { background: var(--accent); border-color: var(--accent); transform: scale(1.1); }
+
+        .ad-spot { width: 100%; height: 90px; background: var(--glass); border: 1px dashed #334155; margin: 20px 0; display: flex; align-items: center; justify-content: center; border-radius: 15px; color: #475569; font-weight: bold; }
     </style>
 </head>
 <body>
 
-    <div id="topAd" class="ad-box">مساحة إعلانية علوية (Google Ads)</div>
+    <canvas id="starfield"></canvas>
 
     <header>
-        <h1 id="title" onclick="adminLogin()">LifeSquare</h1>
-        <div class="stats-bar">✨ <span id="memCount">0</span> ذكريات خُلدت للأبد</div>
+        <h1 onclick="adminLogin()">LifeSquare</h1>
+        <div class="stats-bar">
+            <i class="fas fa-globe-americas"></i> <span id="memCount">0</span> LEGACIES SECURED
+        </div>
     </header>
 
     <div class="grid" id="mainGrid"></div>
 
-    <div id="bottomAd" class="ad-box">مساحة إعلانية سفلية (Google Ads)</div>
-
-    <div id="adminTools" onclick="openAdminPanel()">⚙️ لوحة التحكم نشطة</div>
+    <div id="adminPanel">
+        <button class="admin-btn" onclick="openAdminDashboard()">
+            <i class="fas fa-user-shield"></i> COMMAND CENTER
+        </button>
+    </div>
 
     <div class="modal" id="addModal">
         <div class="modal-box">
-            <h2 style="color:var(--accent); margin-top:0;">حجز مكانك في التاريخ</h2>
+            <h2 style="margin-top:0; color:var(--accent)">Secure Your Legacy</h2>
             <div id="formSection">
-                <input id="name" placeholder="الاسم">
-                <input id="country" placeholder="الدولة">
-                <textarea id="story" placeholder="قصتك المخصصة..." rows="4"></textarea>
-                <p style="font-size: 0.8rem; color: #94a3b8; margin: 5px 0;">اختر صورتك (سيتم ضغطها تلقائياً للسرعة):</p>
-                <input type="file" id="imgFile" accept="image/*">
-                <button class="btn-main" id="saveBtn">خلّد ذكراك الآن</button>
+                <input id="name" placeholder="Full Name">
+                <input id="country" placeholder="Country (e.g. USA, UK, Egypt)">
+                <textarea id="story" placeholder="Your story for eternity..." rows="3"></textarea>
+                
+                <p style="font-size: 0.8rem; color: #94a3b8; margin: 10px 0 5px;">Choose Your Guardian Agent:</p>
+                <div class="guardian-selector" id="gSelector">
+                    <div class="g-opt active" data-icon="🛡️">🛡️</div>
+                    <div class="g-opt" data-icon="🦁">🦁</div>
+                    <div class="g-opt" data-icon="🤖">🤖</div>
+                    <div class="g-opt" data-icon="🐉">🐉</div>
+                </div>
+
+                <input type="file" id="imgFile" accept="image/*" style="font-size: 0.8rem;">
+                <button class="btn-main" id="saveBtn"><i class="fas fa-bolt"></i> BLAST TO ETERNITY</button>
             </div>
 
             <div id="successSection" style="display:none; text-align: center;">
-                <div style="font-size: 3rem; color: var(--success); margin-bottom: 10px;">✅</div>
-                <h3>تم التوثيق بنجاح!</h3>
                 <div id="certificateCard">
-                    <p style="color:var(--gold); font-weight: bold; font-size: 1.2rem;">شهادة توثيق رقمية</p>
-                    <p>نقر نحن في LifeSquare بأن</p>
-                    <h2 id="certName" style="margin: 5px 0;"></h2>
-                    <p>قد حجز مكاناً أبدياً في المربع رقم: <span id="certId" style="color:var(--accent); font-weight: bold;"></span></p>
+                    <h3 style="color:var(--gold)">VERIFIED LEGACY</h3>
+                    <p>This is to certify that</p>
+                    <h2 id="certName" style="color:#fff"></h2>
+                    <p>Has been immortalized in Square #<span id="certId"></span></p>
+                    <div style="font-size: 0.7rem; color: #475569; margin-top: 10px;">SECURED VIA LIFESQUARE PROTOCOL</div>
                 </div>
-                <button class="btn-main" onclick="location.reload()">العودة للحائط</button>
+                <button class="btn-main" onclick="location.reload()">BACK TO GRID</button>
             </div>
+            <button onclick="closeModal('addModal')" id="cancelBtn" style="background:none; color:#666; border:none; width:100%; margin-top:10px; cursor:pointer;">CANCEL</button>
+        </div>
+    </div>
 
-            <button onclick="closeModal('addModal')" id="cancelBtn" style="background:none; color:#666; border:none; width:100%; margin-top:10px; cursor:pointer;">إلغاء</button>
+    <div class="modal" id="adminDashboard">
+        <div class="modal-box" style="max-width: 600px;">
+            <h2 style="color:var(--gold)">Admin Intelligence</h2>
+            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
+                <button class="btn-main" onclick="changeGridSize()">Resize Grid</button>
+                <button class="btn-main" onclick="toggleAds()">Toggle Ads</button>
+                <button class="btn-main" onclick="exportData()">Export Analytics</button>
+                <button class="btn-main" onclick="logoutAdmin()" style="background:var(--error); color:#fff">System Logout</button>
+            </div>
+            <div class="ad-spot">Revenue Stats: 0.00$</div>
+            <button onclick="closeModal('adminDashboard')" style="width:100%; margin-top:20px; background:none; border:none; color:#666; cursor:pointer;">CLOSE</button>
         </div>
     </div>
 
@@ -102,160 +133,112 @@
         const supabase = createClient(SB_URL, SB_KEY);
 
         let gridSize = 200;
+        let selectedGuardian = "🛡️";
         let isAdmin = localStorage.getItem('isSiteAdmin') === 'true';
 
-        // وظيفة ضغط الصور برمجياً
-        async function compressImage(file) {
-            return new Promise((resolve) => {
-                const reader = new FileReader();
-                reader.readAsDataURL(file);
-                reader.onload = (e) => {
-                    const img = new Image();
-                    img.src = e.target.result;
-                    img.onload = () => {
-                        const canvas = document.createElement('canvas');
-                        const MAX_WIDTH = 800; 
-                        const scale = MAX_WIDTH / img.width;
-                        canvas.width = MAX_WIDTH;
-                        canvas.height = img.height * scale;
-                        const ctx = canvas.getContext('2d');
-                        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-                        canvas.toBlob((blob) => resolve(blob), 'image/jpeg', 0.8);
-                    };
-                };
-            });
+        // أنيميشن النجوم
+        const canvas = document.getElementById('starfield');
+        const ctx = canvas.getContext('2d');
+        let stars = [];
+        function initStars() {
+            canvas.width = window.innerWidth; canvas.height = window.innerHeight;
+            stars = [];
+            for(let i=0; i<200; i++) stars.push({x: Math.random()*canvas.width, y: Math.random()*canvas.height, size: Math.random()*2, speed: Math.random()*0.5});
         }
+        function drawStars() {
+            ctx.clearRect(0,0,canvas.width, canvas.height);
+            ctx.fillStyle = "#fff";
+            stars.forEach(s => {
+                ctx.beginPath(); ctx.arc(s.x, s.y, s.size, 0, Math.PI*2); ctx.fill();
+                s.y += s.speed; if(s.y > canvas.height) s.y = 0;
+            });
+            requestAnimationFrame(drawStars);
+        }
+        window.addEventListener('resize', initStars); initStars(); drawStars();
 
+        // لوحة الإدارة
         window.adminLogin = () => {
-            let p = prompt("كلمة سر الإدارة:");
-            if(p === "123") {
-                isAdmin = true;
-                localStorage.setItem('isSiteAdmin', 'true');
-                document.getElementById('adminTools').style.display = 'block';
-                alert("مرحباً أيها المدير!");
+            if(prompt("ACCESS CODE:") === "123") {
+                isAdmin = true; localStorage.setItem('isSiteAdmin', 'true');
+                document.getElementById('adminPanel').style.display = 'block';
             }
         };
+        window.openAdminDashboard = () => document.getElementById('adminDashboard').style.display = 'flex';
+        window.logoutAdmin = () => { localStorage.removeItem('isSiteAdmin'); location.reload(); };
+        window.changeGridSize = () => { gridSize = prompt("New Grid Size:", gridSize); loadWall(); };
 
-        window.openAdminPanel = () => {
-            let choice = prompt("1- تغيير حجم الشبكة\n2- إخفاء/إظهار الإعلانات\n3- خروج");
-            if(choice === "1") { gridSize = prompt("العدد الجديد:", gridSize); loadWall(); }
-            if(choice === "2") { 
-                let ads = document.querySelectorAll('.ad-box');
-                ads.forEach(a => a.style.display = a.style.display === 'none' ? 'flex' : 'none');
+        // اختيار الحارس
+        document.querySelectorAll('.g-opt').forEach(opt => {
+            opt.onclick = () => {
+                document.querySelectorAll('.g-opt').forEach(o => o.classList.remove('active'));
+                opt.classList.add('active');
+                selectedGuardian = opt.dataset.icon;
             }
-            if(choice === "3") { isAdmin = false; localStorage.removeItem('isSiteAdmin'); location.reload(); }
-        };
+        });
 
-        window.closeModal = id => document.getElementById(id).style.display = "none";
-
+        // تحميل الحائط بتعديلات الحراس
         async function loadWall() {
             const grid = document.getElementById("mainGrid");
-            grid.innerHTML = '<p style="grid-column: 1/-1; text-align:center;">جاري فتح سجلات التاريخ...</p>';
-            
             const { data } = await supabase.from("memories").select("*");
             const map = {};
             data?.forEach(m => map[m.square_id] = m);
-            document.getElementById('memCount').innerText = data ? data.length : 0;
-            if(isAdmin) document.getElementById('adminTools').style.display = 'block';
+            document.getElementById('memCount').innerText = data?.length || 0;
+            if(isAdmin) document.getElementById('adminPanel').style.display = 'block';
 
             grid.innerHTML = "";
             for (let i = 1; i <= gridSize; i++) {
                 let sq = document.createElement("div");
-                sq.className = "square";
+                sq.className = "square " + (map[i] ? "occupied" : "empty");
                 let m = map[i];
 
                 if(m) {
                     sq.innerHTML = `
-                        ${m.image_url ? `<img src="${m.image_url}" loading="lazy" onerror="this.src='https://via.placeholder.com/150?text=Error'">` : '<i class="fas fa-image" style="opacity:0.2"></i>'}
+                        <img src="${m.image_url}" loading="lazy" onerror="this.src='https://via.placeholder.com/150?text=Protected'">
+                        <div class="guardian-icon">${m.guardian || '🛡️'}</div>
                         <div class="name-tag">${m.name}</div>
-                        ${i <= 10 ? '<i class="fas fa-crown crown"></i>' : ''}
                     `;
                     sq.onclick = () => showMemory(m);
                 } else {
-                    sq.innerHTML = `<div class="empty-text">انشر قصتك<br><i class="fas fa-pen-nib" style="margin-top:5px; opacity:0.3"></i></div>`;
                     sq.onclick = () => { window.selectedId = i; document.getElementById('addModal').style.display='flex'; };
                 }
                 grid.appendChild(sq);
             }
         }
 
-        window.showMemory = (m) => {
-            const v = document.getElementById("viewBox");
-            v.innerHTML = `
-                ${m.image_url ? `<img src="${m.image_url}" style="width:100%; border-radius:15px; border:2px solid var(--accent)">` : ''}
-                <h2 style="color:var(--gold)">${m.name}</h2>
-                <p style="color:var(--accent)">📍 ${m.country}</p>
-                <p style="background:rgba(0,0,0,0.3); padding:15px; border-radius:10px;">"${m.story}"</p>
-                <button class="btn-main" onclick="shareMemory('${m.name}', ${m.square_id})"><i class="fas fa-share"></i> مشاركة الرابط</button>
-                ${isAdmin ? `<button class="btn-main" onclick="deleteMemory('${m.id}')" style="background:var(--error); color:white">حذف كأدمن</button>` : ''}
-                <button onclick="closeModal('viewModal')" style="background:none; color:#666; border:none; margin-top:15px; cursor:pointer;">إغلاق</button>
-            `;
-            document.getElementById('viewModal').style.display='flex';
-        };
-
-        window.shareMemory = (name, id) => {
-            const url = window.location.href.split('#')[0] + '#' + id;
-            navigator.clipboard.writeText(`شاهد ذكرى ${name} على LifeSquare: ${url}`);
-            alert("تم نسخ رابط المربع! انشره الآن ✨");
-        };
-
-        window.deleteMemory = async (id) => {
-            if(confirm("حذف نهائي؟")) { await supabase.from('memories').delete().eq('id', id); location.reload(); }
-        };
-
+        // حفظ البيانات مع الحارس المختار
         document.getElementById("saveBtn").onclick = async () => {
             const btn = document.getElementById("saveBtn");
-            const fileInput = document.getElementById("imgFile");
+            const file = document.getElementById("imgFile").files[0];
             const name = document.getElementById("name").value;
-            if(!name) return alert("الاسم مطلوب!");
+            if(!name || !file) return alert("Full Name and Image are required!");
 
-            btn.innerText = "جاري المعالجة والرفع...";
-            btn.disabled = true;
+            btn.disabled = true; btn.innerText = "UPLOADING TO VAULT...";
 
-            let imageUrl = null;
-            if (fileInput.files[0]) {
-                // ضغط الصورة قبل الرفع
-                const compressed = await compressImage(fileInput.files[0]);
-                const fileName = `sq_${Date.now()}.jpg`;
-                
-                const { data, error: upError } = await supabase.storage.from("memories").upload(fileName, compressed);
-                if (data) {
-                    imageUrl = `${SB_URL}/storage/v1/object/public/memories/${data.path}`;
-                }
-            }
+            const fileName = `sq_${Date.now()}.jpg`;
+            const { data: upData } = await supabase.storage.from("memories").upload(fileName, file);
+            const publicUrl = `${SB_URL}/storage/v1/object/public/memories/${fileName}`;
 
             const { error } = await supabase.from("memories").insert([{
                 square_id: window.selectedId,
                 name: name,
                 story: document.getElementById("story").value,
                 country: document.getElementById("country").value,
-                image_url: imageUrl
+                image_url: publicUrl,
+                guardian: selectedGuardian // حفظ الحارس المختار
             }]);
 
             if(!error) {
-                // إظهار الشهادة
                 document.getElementById('formSection').style.display = 'none';
-                document.getElementById('cancelBtn').style.display = 'none';
                 document.getElementById('successSection').style.display = 'block';
-                document.getElementById('certificateCard').style.display = 'block';
                 document.getElementById('certName').innerText = name;
                 document.getElementById('certId').innerText = window.selectedId;
             } else {
-                alert("خطأ: " + error.message);
-                btn.disabled = false;
-                btn.innerText = "خلّد ذكراك الآن";
+                alert("Error: " + error.message); btn.disabled = false;
             }
         };
 
-        window.onload = () => {
-            loadWall().then(() => {
-                const hash = window.location.hash.substring(1);
-                if(hash) {
-                    const squares = document.querySelectorAll('.square');
-                    if(squares[hash-1]) squares[hash-1].scrollIntoView({ behavior: 'smooth' });
-                }
-            });
-        };
+        window.closeModal = id => document.getElementById(id).style.display = "none";
+        window.onload = loadWall;
     </script>
 </body>
 </html>
