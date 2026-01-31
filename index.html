@@ -31,16 +31,20 @@
         /* الأيقونات المميزة */
         .crown { position: absolute; top: 5px; left: 5px; color: var(--gold); font-size: 0.8rem; z-index: 2; text-shadow: 0 0 5px #000; }
 
-        /* المودال ولوحة التحكم */
+        /* المودال */
         .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9); backdrop-filter: blur(15px); z-index: 5000; align-items: center; justify-content: center; padding: 20px; }
         .modal-box { background: var(--card); padding: 30px; border-radius: 24px; width: 100%; max-width: 450px; border: 1px solid var(--accent); position: relative; max-height: 90vh; overflow-y: auto; }
         
         input, textarea, select { width: 100%; padding: 12px; margin: 10px 0; background: #020617; border: 1px solid #334155; color: #fff; border-radius: 10px; font-family: inherit; }
-        .btn-main { background: var(--accent); color: #020617; padding: 15px; border: none; border-radius: 12px; width: 100%; font-weight: 900; cursor: pointer; transition: 0.3s; margin-top: 10px; }
+        .btn-main { background: var(--accent); color: #020617; padding: 15px; border: none; border-radius: 12px; width: 100%; font-weight: 900; cursor: pointer; transition: 0.3s; margin-top: 10px; display: flex; align-items: center; justify-content: center; gap: 10px; }
         .btn-main:hover { transform: scale(0.98); opacity: 0.9; }
+        .btn-main:disabled { background: #475569; cursor: not-allowed; }
 
         /* Admin UI */
         #adminTools { display: none; background: var(--gold); color: #000; padding: 10px 20px; border-radius: 50px; position: fixed; bottom: 20px; left: 20px; font-weight: 900; cursor: pointer; z-index: 6000; }
+        
+        /* شهادة التوثيق */
+        #certificateCard { background: linear-gradient(135deg, #1e293b 0%, #020617 100%); border: 5px solid var(--gold); padding: 30px; border-radius: 20px; color: white; margin-bottom: 20px; display: none; }
     </style>
 </head>
 <body>
@@ -61,13 +65,28 @@
     <div class="modal" id="addModal">
         <div class="modal-box">
             <h2 style="color:var(--accent); margin-top:0;">حجز مكانك في التاريخ</h2>
-            <input id="name" placeholder="الاسم">
-            <input id="country" placeholder="الدولة">
-            <textarea id="story" placeholder="قصتك المخصصة..." rows="4"></textarea>
-            <p style="font-size: 0.8rem; color: #94a3b8; margin: 5px 0;">اختر صورتك (سيتم ضغطها تلقائياً للسرعة):</p>
-            <input type="file" id="imgFile" accept="image/*">
-            <button class="btn-main" id="saveBtn">خلّد ذكراك الآن</button>
-            <button onclick="closeModal('addModal')" style="background:none; color:#666; border:none; width:100%; margin-top:10px; cursor:pointer;">إلغاء</button>
+            <div id="formSection">
+                <input id="name" placeholder="الاسم">
+                <input id="country" placeholder="الدولة">
+                <textarea id="story" placeholder="قصتك المخصصة..." rows="4"></textarea>
+                <p style="font-size: 0.8rem; color: #94a3b8; margin: 5px 0;">اختر صورتك (سيتم ضغطها تلقائياً للسرعة):</p>
+                <input type="file" id="imgFile" accept="image/*">
+                <button class="btn-main" id="saveBtn">خلّد ذكراك الآن</button>
+            </div>
+
+            <div id="successSection" style="display:none; text-align: center;">
+                <div style="font-size: 3rem; color: var(--success); margin-bottom: 10px;">✅</div>
+                <h3>تم التوثيق بنجاح!</h3>
+                <div id="certificateCard">
+                    <p style="color:var(--gold); font-weight: bold; font-size: 1.2rem;">شهادة توثيق رقمية</p>
+                    <p>نقر نحن في LifeSquare بأن</p>
+                    <h2 id="certName" style="margin: 5px 0;"></h2>
+                    <p>قد حجز مكاناً أبدياً في المربع رقم: <span id="certId" style="color:var(--accent); font-weight: bold;"></span></p>
+                </div>
+                <button class="btn-main" onclick="location.reload()">العودة للحائط</button>
+            </div>
+
+            <button onclick="closeModal('addModal')" id="cancelBtn" style="background:none; color:#666; border:none; width:100%; margin-top:10px; cursor:pointer;">إلغاء</button>
         </div>
     </div>
 
@@ -85,7 +104,28 @@
         let gridSize = 200;
         let isAdmin = localStorage.getItem('isSiteAdmin') === 'true';
 
-        // نظام الإدارة
+        // وظيفة ضغط الصور برمجياً
+        async function compressImage(file) {
+            return new Promise((resolve) => {
+                const reader = new FileReader();
+                reader.readAsDataURL(file);
+                reader.onload = (e) => {
+                    const img = new Image();
+                    img.src = e.target.result;
+                    img.onload = () => {
+                        const canvas = document.createElement('canvas');
+                        const MAX_WIDTH = 800; 
+                        const scale = MAX_WIDTH / img.width;
+                        canvas.width = MAX_WIDTH;
+                        canvas.height = img.height * scale;
+                        const ctx = canvas.getContext('2d');
+                        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                        canvas.toBlob((blob) => resolve(blob), 'image/jpeg', 0.8);
+                    };
+                };
+            });
+        }
+
         window.adminLogin = () => {
             let p = prompt("كلمة سر الإدارة:");
             if(p === "123") {
@@ -108,7 +148,6 @@
 
         window.closeModal = id => document.getElementById(id).style.display = "none";
 
-        // تحميل الحائط
         async function loadWall() {
             const grid = document.getElementById("mainGrid");
             grid.innerHTML = '<p style="grid-column: 1/-1; text-align:center;">جاري فتح سجلات التاريخ...</p>';
@@ -127,7 +166,7 @@
 
                 if(m) {
                     sq.innerHTML = `
-                        ${m.image_url ? `<img src="${m.image_url}" loading="lazy">` : '<i class="fas fa-image" style="opacity:0.2"></i>'}
+                        ${m.image_url ? `<img src="${m.image_url}" loading="lazy" onerror="this.src='https://via.placeholder.com/150?text=Error'">` : '<i class="fas fa-image" style="opacity:0.2"></i>'}
                         <div class="name-tag">${m.name}</div>
                         ${i <= 10 ? '<i class="fas fa-crown crown"></i>' : ''}
                     `;
@@ -140,7 +179,6 @@
             }
         }
 
-        // عرض الذكرى
         window.showMemory = (m) => {
             const v = document.getElementById("viewBox");
             v.innerHTML = `
@@ -165,22 +203,23 @@
             if(confirm("حذف نهائي؟")) { await supabase.from('memories').delete().eq('id', id); location.reload(); }
         };
 
-        // حفظ البيانات مع معالجة الصور
         document.getElementById("saveBtn").onclick = async () => {
             const btn = document.getElementById("saveBtn");
-            const file = document.getElementById("imgFile").files[0];
+            const fileInput = document.getElementById("imgFile");
             const name = document.getElementById("name").value;
             if(!name) return alert("الاسم مطلوب!");
 
-            btn.innerText = "جاري تخليد ذكراك...";
+            btn.innerText = "جاري المعالجة والرفع...";
             btn.disabled = true;
 
             let imageUrl = null;
-            if (file) {
-                const fileName = `square_${Date.now()}_${file.name}`;
-                const { data, error: upError } = await supabase.storage.from("memories").upload(fileName, file);
+            if (fileInput.files[0]) {
+                // ضغط الصورة قبل الرفع
+                const compressed = await compressImage(fileInput.files[0]);
+                const fileName = `sq_${Date.now()}.jpg`;
+                
+                const { data, error: upError } = await supabase.storage.from("memories").upload(fileName, compressed);
                 if (data) {
-                    // حل مشكلة الرابط: التأكد من المسار الصحيح 100%
                     imageUrl = `${SB_URL}/storage/v1/object/public/memories/${data.path}`;
                 }
             }
@@ -194,15 +233,20 @@
             }]);
 
             if(!error) {
-                alert("تم الحفظ بنجاح! أنت الآن جزء من التاريخ.");
-                location.reload();
+                // إظهار الشهادة
+                document.getElementById('formSection').style.display = 'none';
+                document.getElementById('cancelBtn').style.display = 'none';
+                document.getElementById('successSection').style.display = 'block';
+                document.getElementById('certificateCard').style.display = 'block';
+                document.getElementById('certName').innerText = name;
+                document.getElementById('certId').innerText = window.selectedId;
             } else {
                 alert("خطأ: " + error.message);
                 btn.disabled = false;
+                btn.innerText = "خلّد ذكراك الآن";
             }
         };
 
-        // فحص الروابط المباشرة (Deep Linking)
         window.onload = () => {
             loadWall().then(() => {
                 const hash = window.location.hash.substring(1);
